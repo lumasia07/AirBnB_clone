@@ -229,9 +229,16 @@ class HBNBCommand(cmd.Cmd):
             if cls_name in self.__classes:
                 cmd_args = custom.split('(', 1)[1][:-1].rsplit(',', 2)
                 inst_id = cmd_args[0].strip()
-                att_name = cmd_args[1].strip()
-                att_value = cmd_args[2].strip()
-                self.do_update(f"{cls_name} {inst_id} {att_name} {att_value}")
+                if "{" in cmd_args[1]:
+                    try:
+                        upd_dict = eval(cmd_args[1])
+                        self.do_update(f"{cls_name} {inst_id} {str(upd_dict)}")
+                    except Exception as e:
+                        print("Error:", e)
+                else:
+                    att_name = cmd_args[1].strip()
+                    att_value = cmd_args[2].strip()
+                    self.do_update(f"{cls_name} {inst_id} {att_name} {att_value}")
                 return
 
         return super().default(other)
